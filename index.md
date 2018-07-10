@@ -1,4 +1,6 @@
-# 3D Streaming Toolkit Documentation #
+---
+layout: default
+---
 
 A toolkit for creating powerful cloud-based 3D experiences that stream to traditionally out of reach low-powered devices.
 
