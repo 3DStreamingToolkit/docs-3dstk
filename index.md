@@ -31,7 +31,7 @@ Every client and server application using this toolkit will need to connect to a
 
 ### 1. Signaling server
 
-Our streaming solution is compatible with any standard WebRTC signalling implementation, however, in order to take advantage of multiple peers on one server and scaling features, we recommend [our signaling server](https://github.com/3DStreamingToolkit/signal-3dstk) implementation. The Deploy to Azure button will automatically spin up a sever on your subscription. 
+Our streaming solution is compatible with any standard WebRTC signalling implementation, however, in order to take advantage of multiple peers on one server and scaling features, we recommend [our signaling server](https://github.com/3DStreamingToolkit/signal-3dstk) implementation. The Deploy to Azure button will automatically spin up a server on your subscription. 
 
 V1.3.0 onwards has full CORS support for running locally or in the cloud with http or https. Look at the [README and documentation](https://github.com/3DStreamingToolkit/signal-3dstk) on that page to see which extensions are available and supported. 
 
@@ -147,12 +147,10 @@ If you're seeing errors, check out the [troubleshooting guide](https://github.co
 These resources will be critical to your success in configuring and scaling applications.
 
 + [Sample implementation configuration files](https://github.com/3DStreamingToolkit/3DStreamingToolkit/wiki/JSON-Config-Files)
-+ [Configuring and deploying services](https://github.com/3DStreamingToolkit/3DStreamingToolkit/wiki#services-setup)
 + [Configuring authentication](https://github.com/3DStreamingToolkit/3DStreamingToolkit/wiki/Configuring-authentication)
 
 ### Learn More
 
-+ [General Wiki](https://github.com/3DStreamingToolkit/3DStreamingToolkit/wiki)
 + [Building WebRTC from source](https://github.com/3DStreamingToolkit/3DStreamingToolkit/wiki/Building-WebRTC-from-source)
 + [WebRTC Homepage](https://webrtc.org/)
 + [NVEncode Homepage](https://developer.nvidia.com/nvidia-video-codec-sdk)
