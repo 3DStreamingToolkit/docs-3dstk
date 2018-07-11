@@ -141,17 +141,19 @@ Once you see `Libraries retrieved and up to date` you may proceed.
 
 If you're seeing errors, check out the [troubleshooting guide](https://github.com/3DStreamingToolkit/3DStreamingToolkit/wiki/FAQ) and then [file an issue](https://github.com/3DStreamingToolkit/3DStreamingToolkit/issues/new).
 
+## Building WebRTC from source
+For any changes to the underlying native or UWP WebRTC library, you must build WebRTC from source. We pushed all our extensions and patches to a single GitHub repo. Follow these [steps to build from source](./webrtc-build.md). 
 
-### Next Steps
+## Next Steps
 
 These resources will be critical to your success in configuring and scaling applications.
 
-+ [Sample implementation configuration files](https://github.com/3DStreamingToolkit/3DStreamingToolkit/wiki/JSON-Config-Files)
-+ [Configuring authentication](https://github.com/3DStreamingToolkit/3DStreamingToolkit/wiki/Configuring-authentication)
++ [Sample implementation configuration files](./webrtc-config.md)
++ [Configuring authentication](./auth.md)
 
-### Learn More
+## Learn More
 
-+ [Building WebRTC from source](https://github.com/3DStreamingToolkit/3DStreamingToolkit/wiki/Building-WebRTC-from-source)
++ [Building WebRTC from source](./webrtc-build.md)
 + [WebRTC Homepage](https://webrtc.org/)
 + [NVEncode Homepage](https://developer.nvidia.com/nvidia-video-codec-sdk)
 + [NvPipe original source](https://github.com/NVIDIA/NvPipe)
