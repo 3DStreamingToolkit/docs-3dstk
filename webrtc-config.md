@@ -126,7 +126,7 @@ This configuration enables temporary turn credential retrieval (and has a depend
 
 # Server Configuration (serverConfig.json)
 
-3DToolkit's sample server applications have server specific configuration that is stored in an external JSON configuration file (serverConfig.json). It can be used to configure encoding dimensions, system service status, system capacity, and system service installation settings.
+3DStreamingToolkit's sample server applications have server specific configuration that is stored in an external JSON configuration file (serverConfig.json). It can be used to configure encoding dimensions, system service status, system capacity, and system service installation settings.
 
 ```
 {
@@ -161,26 +161,25 @@ When set to `true`, the server will auto connect to the signaling server.
 
 # NVEncode Configuration (nvEncConfig.json)
 
-3DToolkit's sample server applications make use of an external JSON configuration file (nvEncConfig.json) to manage the settings used for video encoding.  Below is an example nvEncConfig.json file. This file should be placed in your executable directory.
-
-    {
-      "useSoftwareEncoding": false,
-      "serverFrameCaptureFPS": 60,
-      "NvencodeSettings": {
-        "bitrate": 5500000,
-        "minBitrate": 0,
-        "fps": 60,
-        "qp": 5,
-        "intraRefreshPeriod": 60,
-        "intraRefreshEnableFlag": true,
-        "intraRefreshDuration": 6,
-        "enableTemporalAQ": false,
-        "invalidateRefFramesEnableFlag": true,
-        "nvEncodeProfile": 2,
-        "nvEncodeProfile_comment": "nvEncodeProfile enums: 1 - NV_ENC_H264_PROFILE_MAIN_GUID; 2 - N V_ENC_PRESET_LOW_LATENCY_HQ_GUID; 3 - NV_ENC_H264_PROFILE_STEREO_GUID; 0 - NV_ENC_CODEC_PROFILE_AUTOSELECT_GUID"
-      }
-    }
-
-* Set "useSoftwareEncoding" to true to use the CPU for video encoding - this will increase latency and should only be used for development on computers without an nvidia video card.
-* Set "serverFrameCaptureFPS": 60 and "fps" to the same value. Maximum FPS is dependent on card and scene complexity.
-* Set "bitrate" and "minBitrate" to set the max and min bitrates for video streaming - recommended maximum @ 10mbps and min to 5.5mbps for high quality streaming. Anything over 10mbps will not visibly increase quality (see test runners for validation). Setting minBitrate to 0 enables webrtc to drop bitrate to whatever it needs to in order to keep video streaming fluidly.
+3DStreamingToolkit's sample server applications make use of an external JSON configuration file (nvEncConfig.json) to manage the settings used for video encoding.  Below is an example nvEncConfig.json file. This file should be placed in your executable directory.
+```
+{
+  /* Set the desired framerate for the renderer and the encoder. */
+  "serverFrameCaptureFPS": 60,
+  "NvencodeSettings": {
+    /* Setup the average and min bitrate for the encoder.
+    * WebRTC will modify the bitrate based on bandwidth but will never go below minBitrate.
+    * Use the Kush gauge for best quality: width * height * framerate * 4 * 0.07 
+    * Our mono samples are 1280x720 and stereo 2560x720 
+    * WARNING: Setting a high minBitrate can cause latency. */
+    "bitrate": 7741440,
+    "minBitrate": 3870720,
+    /* Setup an encoder that puts an IDR every 60 frames and the rest P-frames. 
+    * Set intraRefreshEnableFlag to enable/disable I-frames. 
+    * If flag is true, intraRefreshPeriod puts an I-frame every (n) number of frames. */
+    "idrPeriod": 60,
+    "intraRefreshPeriod": 30,
+    "intraRefreshEnableFlag": false
+  }
+}
+```

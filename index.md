@@ -149,7 +149,9 @@ For any changes to the underlying native or UWP WebRTC library, you must build W
 These resources will be critical to your success in configuring and scaling applications.
 
 + [Sample implementation configuration files](./webrtc-config.md)
++ [Multiple users connecting to a single server](./multi-peer.md)
 + [Configuring authentication](./auth.md)
++ [Large scale cloud deployment](./large-scale.md)
 
 ## Learn More
 
