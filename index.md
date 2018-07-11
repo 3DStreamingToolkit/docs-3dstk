@@ -4,30 +4,107 @@ layout: default
 
 A toolkit for creating powerful cloud-based 3D experiences that stream to traditionally out of reach low-powered devices.
 
-
-![Maingif](https://github.com/3DStreamingToolkit/3DStreamingToolkit/blob/master/.github/header.png)
+![Maingif](./Images/header.png)
 
 ## What is this?
 
 **Problem:** The world is becoming increasingly mobile, but the demand for high-fidelity 3D content is only growing. We needed a scalable approach to make this sort of content available on low-powered, low-bandwidth devices.
 
-The 3DStreamingToolkit project's purpose is to provide an approach for developing 3D server applications that stream frames to other devices over the network. Specifically:
+The 3DStreamingToolkit project's purpose is to provide an approach for developing 3D server applications that stream frames in real-time to other devices over the network. Specifically:
 
-1. Server-side libraries for remotely rendering 3D scenes
-2. Client-side libraries for receiving streamed 3D scenes
-3. Low-latency audio and video streams using WebRTC
-4. High-performance video encoding and decoding using NVEncode
+1. A server-side C++ plugin and samples for remotely rendering and streaming 3D scenes
+2. Cross-platform client-side samples for receiving streamed 3D scenes, including HoloLens
+3. Cloud infrastructure architecture to allow large-scale deployment 
+4. Zero latency video compression using NvPipe/NVEncode
+5. WebRTC extensions for 3D content and input
 
-![WebRTC applied to 3D Streaming](https://github.com/3DStreamingToolkit/3DStreamingToolkit/blob/master/Docs/Images/webrtc3d.jpg)
-<!---  (![high level architecture](./readme_data/hl-arch.png))--->
+![WebRTC applied to 3D Streaming](./Images/webrtc3d.jpg)
 
-Here's a high-level diagram of the components we've built (in green), and how they interact with the underlying WebRTC and NVEncode technologies we've leveraged. For a full description, check out [our wiki page on WebRTC](https://github.com/3DStreamingToolkit/3DStreamingToolkit/wiki/What-is-3DStreamingToolkit#webrtc-httpwebrtcorg). 
+Here's a high-level diagram of the components we've built (in green), and how they interact with the underlying WebRTC and NVEncode technologies we've leveraged. 
 
 ## Getting Started
 
-### How to build
+This toolkit is available as a native C++ plugin and can be added to any rendering engine to enable streaming over the network using WebRTC. Our client samples are the perfect starting point to test the streaming capability and interacting with the 3D scene. 
 
-> If you don't wish to build the toolkit yourself, you can download our latest build [here](https://github.com/3DStreamingToolkit/3DStreamingToolkit/releases/latest).
+Every client and server application using this toolkit will need to connect to a signaling server and a TURN server. Before continuing, it is important that you familiarize with WebRTC and understand what servers are required for your solution. Please see this in-depth tutorial about [signaling](https://www.html5rocks.com/en/tutorials/webrtc/infrastructure/#what-is-signaling) and [STUN/TURN](https://www.html5rocks.com/en/tutorials/webrtc/infrastructure/#after-signaling-using-ice-to-cope-with-nats-and-firewalls).  
+
+
+### 1. Signaling server
+
+Our streaming solution is compatible with any standard WebRTC signalling implementation, however, in order to take advantage of multiple peers on one server and scaling features, we recommend [our signaling server](https://github.com/3DStreamingToolkit/signal-3dstk) implementation. The Deploy to Azure button will automatically spin up a sever on your subscription. 
+
+V1.3.0 onwards has full CORS support for running locally or in the cloud with http or https. Look at the [README and documentation](https://github.com/3DStreamingToolkit/signal-3dstk) on that page to see which extensions are available and supported. 
+
+
+### 2. TURN server
+
+As explained above, for most scenarios, servers and clients will be behind multiple layers of NAT, proxies and corporate firewalls. To enable streaming, it will be required to have a TURN server deployed and running. 
+
+Please see our code story on [how to deploy a simple or load-balanced TURN](https://www.microsoft.com/developerblog/2018/01/29/orchestrating-turn-servers-cloud-deployment/).
+
+
+### 3. Sample server and client applications
+
+We strongly recommend running out pre-built samples for server and clients, before attempting to integrate the plugin into a new application. This will ensure that the network configuration is running properly. 
+
+Any local or remote server machine that will be used for rendering and streaming, must have the following prerequisites:
+•	The target machine must run Windows 10 or Windows Server 2016 and must have a compatible Nvidia GPU that can run Nvencode.
+•	x64 Visual C++ Redistributable for Visual Studio 2015
+
+> NOTE: you can use a non-Nvidia GPU for testing as it will automatically switch to software encoding, however, we do not recommend using that in production as the latency and FPS will be greatly affected. 
+
+You can download and unzip any of the server/clients from our latest release. Our easiest pair to start with is [DirectX-NativeClient-v2.0](https://github.com/3DStreamingToolkit/3DStreamingToolkit/releases/download/v2.0/3DStreamingToolkit-DirectX-NativeClient-v2.0.zip) and [DirectX-SpinningCubeServer-v2.0](https://github.com/3DStreamingToolkit/3DStreamingToolkit/releases/download/v2.0/3DStreamingToolkit-DirectX-SpinningCubeServer-v2.0.zip). 
+
+### 4. WebRTC Configuration (webrtcConfig.json) 
+
+3DSTK’s sample server applications make use of an external JSON configuration file (webrtcConfig.json) to manage the connections to the Signaling and TURN services. Below is an example webrtcConfig.json file. This file contains placeholders for server addresses from your server setup in step 1 and 2. This file is found in the executable directory.  
+
+```
+{
+  "iceConfiguration": "relay",
+  "turnServer": {
+    "uri": "turn:<url>:5349",
+    "username": "<username>",
+    "password": "<password>"
+  },
+  "server": "<url>",
+  "port": 80
+  "heartbeat": 5000
+}
+
+```
+Our sample clients use the same configuration options but depending on the platform, it might be part of a json file or part of the source code. For example, our [DirectX-NativeClient-v2.0](https://github.com/3DStreamingToolkit/3DStreamingToolkit/releases/download/v2.0/3DStreamingToolkit-DirectX-NativeClient-v2.0.zip) uses the same webrtcConfig.json as part of the executable directory and our [WebClient-v2.0](https://github.com/3DStreamingToolkit/3DStreamingToolkit/releases/download/v2.0/3DStreamingToolkit-WebClient-v2.0.zip) has the config options as part of the app.js
+```
+ var defaultSignalingServerUrl = 'http://localhost:3001';
+  var pcConfigStatic = {
+    'iceServers': [{
+        'urls': 'turn server goes here',
+        'username': 'username goes here',
+        'credential': 'password goes here',
+        'credentialType': 'password'
+    },
+    {
+      'urls': 'stun:stun.l.google.com:19302'
+    }],
+    'iceTransportPolicy': 'relay'
+  };
+
+```
+
+### 5. Streaming your first scene 
+
+Before trying to connect the server and client, make sure you set the **SAME** signalling and TURN url for **BOTH** the client and the server webrtc configurations. 
+
+Simply open the client and server sample apps and press the connect button. You will now see the client/server appearing in the “List of currently connected peers”.
+
+To start streaming, double click on the client/server name and the real-time interaction will begin. You can use the client app to click and drag to move the camera in the scene.   
+
+> This is the output of the DirectXSpinningCube server when connected to a DirectX native client. 
+![FirstScene](./Images/clientoutput.jpg)
+
+After connecting, you should be seeing success! If you're instead seeing errors, check out the [Troubleshooting guide](https://github.com/3DStreamingToolkit/3DStreamingToolkit/wiki/FAQ) and then [file an issue](https://github.com/3DStreamingToolkit/3DStreamingToolkit/issues/new). Additionally, you can see more information about our other sample implementations [here](https://github.com/3DStreamingToolkit/3DStreamingToolkit/wiki/Feature-matrices).
+
+## How to build the toolkit
 
 These steps will ensure your development environment is configured properly, and then they'll walk you through the process of building our code.
 
@@ -64,15 +141,6 @@ Once you see `Libraries retrieved and up to date` you may proceed.
 
 If you're seeing errors, check out the [troubleshooting guide](https://github.com/3DStreamingToolkit/3DStreamingToolkit/wiki/FAQ) and then [file an issue](https://github.com/3DStreamingToolkit/3DStreamingToolkit/issues/new).
 
-### Build output
-
-After you've built the solution, you'll likely want to start one sample server implementation, and one sample client implementation. We've provided example client and server applications to demonstrate the behaviors the toolkit provides.
-
-> Note: We advise you to try `Spinning Cube` and `StreamingDirectxClient` to begin, as these are the simpliest sample implementations.
-
-To run one server and one client, navigate to the location under `Build\<Platform>\<Configuration>\` and start the `exe`.To identify what `<Platform>` and `<Configuration>` are, see your desired configuration from [section: the actual build](#the-actual-build). Recall the note encourages using  `Release` and `x64`.
-
-Once you start both a server and client implementation, you will need to give it a signaling server. If you need to set one up, please see our [wiki on Signaling Service](https://github.com/3DStreamingToolkit/3DStreamingToolkit/wiki/Signaling-Service) for an easy local or cloud-based implementation. After connecting, you should be seeing success! If you're instead seeing errors, check out the [Troubleshooting guide](https://github.com/3DStreamingToolkit/3DStreamingToolkit/wiki/FAQ) and then [file an issue](https://github.com/3DStreamingToolkit/3DStreamingToolkit/issues/new). Additionally, you can see more information about our other sample implementations [here](https://github.com/3DStreamingToolkit/3DStreamingToolkit/wiki/Feature-matrices).
 
 ### Next Steps
 
