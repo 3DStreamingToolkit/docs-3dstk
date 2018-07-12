@@ -1,8 +1,33 @@
-# Introduction
+## Introduction
 
-Azure Batch allows you to run large-scale parallel and high-performance computing (HPC) apps efficiently in the cloud. You can schedule compute-intensive work to run on pools of virtual machines, run tasks on those VMs and scale as needed. You may use a variety of tools/languages to create a new Batch account and its contents, including [Azure CLI](https://docs.microsoft.com/en-us/azure/batch/quick-create-cli), [Azure Portal](https://docs.microsoft.com/en-us/azure/batch/quick-create-portal), [.NET](https://docs.microsoft.com/en-us/azure/batch/quick-run-dotnet) and [Python](https://docs.microsoft.com/en-us/azure/batch/quick-run-python). 
+3DStreamingToolkit's purpose is to allow building powerful stereoscopic 3D experiences that run on the cloud and stream to low-powered devices. In order to achieve this, a large-scale architecture is required that has all the required WebRTC servers (signaling and TURN) and an orchestrator capable of monitoring and scaling up/down pools of VMs that host the rendering applications. Clients can easily connect to the signaling server and the orchestator will decide what VM should connect to the user.
+
+Key components:
+1. Signaling Server Web API  
+2. Orchestrator and cloud scaling Web API 
+3. Azure Batch 
+
+### Signaling Server Web API
+
+This enables webrtc peer communication across the 3DStreamingToolkit server/client stack. This means that it can be used to faciliate communication between N clients, N peers, and/or both. It uses http as a protocol, and can run over https as well. Further, authentication can be toggled on, requiring clients to provide valid OAuth 2.0 tokens in order to successfully access the service. 
+
+### Orchestrator and cloud scaling Web API 
+
+This is a custom Web API that and will dynamically monitor the overall active users and capacity and decide when to create or delete pools of VMs inside Azure Batch tu sustain a high number of users. Each pool creation will add the correct dependencies, install the custom applications connect the VM to the signaling server and ensure that each application is ready for streaming. 
+
+### Azure Batch
+
+Azure Batch allows you to run large-scale parallel and high-performance computing (HPC) apps efficiently in the cloud. You can schedule compute-intensive work to run on pools of virtual machines, run tasks on those VMs, monitor the state and scale as needed.
 
 More info on Azure Batch: [https://docs.microsoft.com/en-us/dotnet/api/overview/azure/batch?view=azure-dotnet](https://docs.microsoft.com/en-us/dotnet/api/overview/azure/batch?view=azure-dotnet)
+
+## Reference architecture
+
+![architecture](./Images/large-scale-3DSTK-architecture.jpg)
+
+
+
+
 
 
 # VMs in 3D Streaming Toolkit

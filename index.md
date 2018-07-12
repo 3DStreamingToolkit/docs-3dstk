@@ -6,6 +6,16 @@ A toolkit for creating powerful cloud-based 3D experiences that stream to tradit
 
 ![Maingif](./Images/header.png)
 
+## Quick Links
+
+- [Getting Started](#getting-started)
+- [How to build the toolkit](#how-to-build-the-toolkit)
+- [Building WebRTC from source](#building-webrtc-from-source)
+- [Large scale cloud deployment](./large-scale.md)
+- [Next Steps](#next-steps)
+- [Learn More](#learn-more)
+
+
 ## What is this?
 
 **Problem:** The world is becoming increasingly mobile, but the demand for high-fidelity 3D content is only growing. We needed a scalable approach to make this sort of content available on low-powered, low-bandwidth devices.
@@ -142,7 +152,12 @@ Once you see `Libraries retrieved and up to date` you may proceed.
 If you're seeing errors, check out the [troubleshooting guide](https://github.com/3DStreamingToolkit/3DStreamingToolkit/wiki/FAQ) and then [file an issue](https://github.com/3DStreamingToolkit/3DStreamingToolkit/issues/new).
 
 ## Building WebRTC from source
+
 For any changes to the underlying native or UWP WebRTC library, you must build WebRTC from source. We pushed all our extensions and patches to a single GitHub repo. Follow these [steps to build from source](./webrtc-build.md). 
+
+## Large scale cloud deployment
+
+In a real-world scenario, this solution will require a large-scale cloud infrastructure to support multiple active users and manual/dynamic scaling based on usage. To achieve this, we created a reference architecture that can be easily deployed on your Azure subscription. To get started, look at [Large scale cloud deployment](./large-scale.md). 
 
 ## Next Steps
 
@@ -151,7 +166,6 @@ These resources will be critical to your success in configuring and scaling appl
 + [Sample implementation configuration files](./webrtc-config.md)
 + [Multiple users connecting to a single server](./multi-peer.md)
 + [Configuring authentication](./auth.md)
-+ [Large scale cloud deployment](./large-scale.md)
 
 ## Learn More
 
