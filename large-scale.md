@@ -1,6 +1,6 @@
 ## Introduction
 
-3DStreamingToolkit's purpose is to allow building powerful stereoscopic 3D experiences that run on the cloud and stream to low-powered devices. In order to achieve this, a large-scale architecture is required that has all the required WebRTC servers (signaling and TURN) and an orchestrator capable of monitoring and scaling up/down pools of VMs that host the rendering applications. Clients can easily connect to the signaling server and the orchestator will decide what VM should connect to the user.
+3DStreamingToolkit's purpose is to allow building powerful stereoscopic 3D experiences that run on the cloud and stream to low-powered devices. To achieve this, a large-scale architecture is required that has all the required WebRTC servers (signaling and TURN) and an orchestrator capable of monitoring and scaling up/down pools of VMs that host the rendering applications. Clients can easily connect to the signaling server and the orchestrator will decide what VM should connect to the user.
 
 Key components:
 1. Signaling Server Web API  
@@ -9,11 +9,11 @@ Key components:
 
 ### Signaling Server Web API
 
-This enables webrtc peer communication across the 3DStreamingToolkit server/client stack. This means that it can be used to faciliate communication between N clients, N peers, and/or both. It uses http as a protocol, and can run over https as well. Further, authentication can be toggled on, requiring clients to provide valid OAuth 2.0 tokens in order to successfully access the service. 
+This enables webrtc peer communication across the 3DStreamingToolkit server/client stack. This means that it can be used to facilitate communication between N clients, N peers, and/or both. It uses http as a protocol and can run over https as well. Further, authentication can be toggled on, requiring clients to provide valid OAuth 2.0 tokens to successfully access the service. 
 
-### Orchestrator and cloud scaling Web API 
+### Orchestrator and cloud scaling Web API
 
-This is a custom Web API that and will dynamically monitor the overall active users and capacity and decide when to create or delete pools of VMs inside Azure Batch tu sustain a high number of users. Each pool creation will add the correct dependencies, install the custom applications connect the VM to the signaling server and ensure that each application is ready for streaming. 
+This is a custom Web API that and will dynamically monitor the overall active users and capacity and decide when to create or delete pools of VMs inside Azure Batch to sustain a high number of users. Each pool creation will add the correct dependencies, install the custom applications connect the VM to the signaling server and ensure that each application is ready for streaming. 
 
 ### Azure Batch
 
@@ -25,9 +25,15 @@ More info on Azure Batch: [https://docs.microsoft.com/en-us/dotnet/api/overview/
 
 ![architecture](./Images/large-scale-3DSTK-architecture.jpg)
 
+This architecture is a great starting point for anyone looking to create an enterprise-grade large-scale solution for remote rendering in the cloud. The flow (steps 1-12) shows how any team can deploy these components and allow end-users to connect to the desired experience. More specifically: 
 
-
-
+1. The dev team takes a rendering application (DirectX, OpenGL, Unity) and integrates the 3D Streaming Toolkit. On each release, the executable and dependencies are zipped and versioned. 
+2. The team deploys all required components to Azure (signaling web api, scaling web api, Vnet and azure batch) and sets the configuration (maximum active users, VMs per pool, max users per VM, etc.)
+3. All releases from step 1 are uploaded to Azure Batch for deployment on pool creation. 
+4. Once the signaling server is up and running, the IP must be public and shared. This is the entry point to all clients and servers and must be integrated to any published client. 
+5. Once a client has a successful login from an end-user, it will automatically connect to signaling server. 
+6. For each client connection, a status is sent to the orchestrator to decide if new pools are needed. This is based on the configuration set at step 2 and can be fully customized for any scenario. 
+7. 
 
 
 # VMs in 3D Streaming Toolkit
@@ -111,12 +117,10 @@ There are some features and limitations to be aware of when using Azure Batch:
 * If using a [custom image](https://docs.microsoft.com/en-us/azure/batch/batch-custom-images), the VM image must reside in the same region and subscription as the Azure Batch account.
 * For the Web API implementation, [SharedKeyCredentials](https://docs.microsoft.com/en-us/dotnet/api/microsoft.azure.batch.auth.batchsharedkeycredentials?view=azure-dotnet) are enough to create a VM in Batch, but a custom image would require [TokenCredentials](https://docs.microsoft.com/en-us/dotnet/api/microsoft.azure.batch.auth.batchtokencredentials?view=azure-dotnet) which needs [Azure AD](https://docs.microsoft.com/en-us/azure/batch/batch-aad-auth) for authentication.
 
-
-# Resources & Links:
-* Azure Batch website: https://azure.microsoft.com/en-us/services/batch/
-* Batch Documentation: https://docs.microsoft.com/en-us/azure/batch/
-* Azure Batch in a Virtual Network: https://docs.microsoft.com/en-us/azure/batch/batch-virtual-network
-* Batch Samples on GitHub: https://github.com/Azure/azure-batch-samples
-* Azure Code Samples: https://azure.microsoft.com/en-us/resources/samples/?service=batch&sort=0
-* Batch Pool Projects: https://github.com/shahedc/BatchPoolProjects
-
+# Resources & Links
+* [Azure Batch website](https://azure.microsoft.com/en-us/services/batch/)
+* [Batch Documentation](https://docs.microsoft.com/en-us/azure/batch/)
+* [Azure Batch in a Virtual Network](https://docs.microsoft.com/en-us/azure/batch/batch-virtual-network)
+* [Batch Samples on GitHub](https://github.com/Azure/azure-batch-samples)
+* [Azure Code Samples](https://azure.microsoft.com/en-us/resources/samples/?service=batch&sort=0)
+* [Batch Pool Projects](https://github.com/shahedc/BatchPoolProjects)
