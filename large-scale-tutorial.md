@@ -8,7 +8,6 @@ This tutorial provides instructions on how to set up a large-scale cloud archite
 6. Upload application releases to Azure Batch
 7. Upload all dependencies and functional tests to Azure Batch
 8. Clone/Download the sample Cloud3DSTKDeployment web app/api project
-9. Set dynamic scaling configuration
 10. Modify/add QA tasks for each pool creation
 11. Run the Web project, locally or in the cloud
 12. Invoke the Cloud3DSTKDeployment endpoints with HTTP POST
@@ -58,31 +57,41 @@ Log in to the Azure Portal at: https://portal.azure.com
 
 ![05-batch-pool-contents](https://user-images.githubusercontent.com/779562/42059497-abc75cd4-7af1-11e8-81e8-b306e1db591e.png) 
 
-# 6. Upload application releases to Azure Batch
+# 6. Upload streaming application releases to Azure Batch
 
 1. Revisit the Azure Portal at: https://portal.azure.com
 2. Click on the Batch account you created earlier.
 3. Browse the sections to see Applications within that Batch account.
-4. Upload the application release with the correct version
+4. Upload the application releases with desired versioning. For each pool creation, Azure Batch will automatically copy a specific or latest version of the application and unzip the content.  
 
 # 7. Upload all dependencies and functional tests to Azure Batch
 
+1. Browse to the same Applications section as step 6
+2. Upload the desired Nvidia driver install. For Azure NV series get the latest [here](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/n-series-driver-setup)
+3. Upload all dependency installers required for your streaming application. For example, for our DirectX sample servers, we require the [Visual C++ Redistributable for Visual Studio 2015](https://www.microsoft.com/en-us/download/details.aspx?id=48145) 
+4. Retrieve and upload the latest end-to-end functional test from [3D Streaming toolkit releases](https://github.com/3DStreamingToolkit/3DStreamingToolkit/releases). The latest version is [3DStreamingToolkit-FunctionalTests-v2.0](https://github.com/3DStreamingToolkit/3DStreamingToolkit/releases/download/v2.0/3DStreamingToolkit-FunctionalTests-v2.0.zip)
+6. Upload the [latest server deployment script](https://github.com/3DStreamingToolkit/cloud-deploy/tree/master/batch-application-packages/streaming-server-deployment)
+7. You can upload any other scripts or installers that you require for your VM creation
 
+![07-batch-applications](./Images/batch-applications.jpg) 
  
-# 5. Clone/Download the sample Cloud3DSTKDeployment web app/api project
+# 8. Clone/Download the sample Cloud3DSTKDeployment web app/api project
 
 1. Refer to the Cloud3DSTKDeployment project from the following repo: https://github.com/3DStreamingToolkit/cloud-deploy
-2. Clone the repo locally and open it in Visual Studio 2017.
-3. Build the solution in Visual Studio 2017.
+2. Clone the repo locally and open `Cloud3DSTKDeployment.sln` in Visual Studio 2017.
 
-![05-batch-pool-web-app](https://user-images.githubusercontent.com/779562/42054585-d39d8b16-7ae2-11e8-8cb6-a97c34172fb2.PNG)
+![08-cloud-deploy](./Images/clouddeploy.jpg)
+
+# 9. Modify/add QA tasks for each pool creation
+
+1. Open to `Services/BatchService.cs` and look at `CreateWindowsPool` method
+2. Modify the start task for 
  
 # 6. Run the Web project, locally or in the cloud.
 
-1. Update the JSON configuration file for your environment.
-2. During development, use the file "appsettings.Development.json"
-3. Refer to the sample settings below and replace with your own values:
-4. Run the Web App project locally or after deploying to your Azure account.
+1. Update the JSON configuration file for your environment
+3. Refer to the sample settings below and replace with your own values
+4. Run the Web App project locally or after deploying to your Azure account
 
 ```json
 {
