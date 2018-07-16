@@ -68,7 +68,7 @@ Log in to the Azure Portal at: https://portal.azure.com
 6. Upload the [latest server deployment script](https://github.com/3DStreamingToolkit/cloud-deploy/tree/master/batch-application-packages/streaming-server-deployment)
 7. You can upload any other scripts or installers that you require for your VM creation
 
-![06-batch-applications](./Images/batch-applications.jpg) 
+![06-batch-applications](./Images/batch-applications.JPG) 
  
 ## 7. Clone/Download the sample Cloud3DSTKDeployment web app/api project
 
@@ -237,7 +237,7 @@ var startRenderingCommand = string.Format(
 
 ## 13. Connect the clients to the VMs
 
-1. Look at the [Get Started section](./index.md#get-started) to setup a client. 
+1. Look at the [Getting Started section](./index.md#getting-started) to setup a client. 
 2. The WebRTC configuration should use the signaling server deployed in step 3. The TURN server credentials are automatically passed down to the clients (DirectX and WebClient samples) on connection.
 3. Depending on the servers capacity, dedicated nodes and pools, you can now connect multiple clients and easily scale up/down inside the Azure Batch portal or by triggering the API endpoints from step 11. 
 
