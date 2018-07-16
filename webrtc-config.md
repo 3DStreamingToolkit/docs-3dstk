@@ -69,13 +69,13 @@ The uri that we will communicate with to request [STUN](https://en.wikipedia.org
 
 > Supported values: `string, uri`
 
-Indicates the signalling server (see our implementation [here](https://github.com/anastasiia-zolochevska/signaling-server)) uri that we will connect to, and use for signalling.
+Indicates the signalling server (see our implementation [here](https://github.com/3DStreamingToolkit/signal-3dstk)) uri that we will connect to, and use for signalling.
 
 ### port
 
 > Supported values: `int, port`
 
-Indicates the signalling server (see our implementation [here](https://github.com/anastasiia-zolochevska/signaling-server)) port that we will connect to, and use for signalling.
+Indicates the signalling server (see our implementation [here](https://github.com/3DStreamingToolkit/signal-3dstk)) port that we will connect to, and use for signalling.
 
 ### heartbeat
 
@@ -149,7 +149,7 @@ This configuration enables temporary turn credential retrieval (and has a depend
 
 ### systemCapacity
 
-Controls [multi-peer](https://github.com/CatalystCode/3dtoolkit/wiki/Multi-peer) capacity.
+Controls [multi-peer](./multi-peer.md) capacity.
 
 ### autoCall
 

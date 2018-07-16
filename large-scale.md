@@ -23,7 +23,7 @@ This architecture is a great starting point for anyone looking to create an ente
 10. If a new pool is needed, it will trigger a request to Azure Batch to create pool of NV6+ VMs. New TURN server nodes will be created if the existing ones are at full capacity. 
 11. Once a new pool is created, the scaling api will trigger tasks to install dependencies, install the streaming applications and run all functional tests to ensure the VM is ready for streaming.
 12. When a VM is ready, the streaming application will automatically connect to the signaling server and will be assigned to a queue to await client connections.
-13. At any point, the cloud admin can use the Azure Batch portal to decide if new pools are needed. A simple POST request will run the automated process add more VMs. This can also be scheduled if a high uptake of users is predicted during a certain time of the day.
+13. At any point, the cloud admin can use the Azure Batch portal to decide if new pools are needed. A simple POST request will run the automated process and add more VMs. This can also be scheduled if a high uptake of users is predicted during a certain time of the day.
 
 Key components:
 1. Signaling Server Web API  
@@ -36,7 +36,7 @@ This enables webrtc peer communication across the 3DStreamingToolkit server/clie
 
 ### Orchestrator and cloud scaling Web API
 
-To make it easier to spin up the necessary VMs for a 3DSTK server environment, a Web API endpoint has been provided. This will dynamically monitor the overall active users and capacity and decide when to create or delete pools of VMs inside Azure Batch to sustain a desired number of active users. Each pool creation will add the correct dependencies, install the custom applications, connect the VM to the signaling server and ensure that each application is ready for streaming. The Web API project uses `ASP.NET` and it requires [Visual Studio 2017](https://visualstudio.com/vs) (v15.7 or higher).
+To make it easier to spin up the necessary VMs for a 3DSTK server environment, a Web API endpoint has been provided. The API endpoints will create the pools and nodes, add the correct dependencies, install the custom applications, connect the VM to the signaling server and ensure that each application is ready for streaming. The Web API project uses `ASP.NET` and it requires [Visual Studio 2017](https://visualstudio.com/vs) (v15.7 or higher). 
 
 Below is a sample snippet of the JSON input that can be provided:
 
@@ -44,6 +44,7 @@ Below is a sample snippet of the JSON input that can be provided:
 {
   "signalingServer": "SIGNALING_URI", // Required
   "signalingServerPort": 80, // Required
+  "vnet": "/subscriptions/{subscription}/resourceGroups/{group}/providers/{provider}/virtualNetworks/{network}/subnets/{subnet}", 
   "renderingPoolId": "RENDERING_POOL_ID",
   "renderingJobId": "RENDERING_JOB_ID",
   "dedicatedRenderingNodes": 1,
@@ -67,7 +68,7 @@ More info on setting NetworkConfiguration.SubnetId: [https://docs.microsoft.com/
 
 # Setting up the cloud architecture
 
-To get started on deploying the architecture on your own subscription, please follow our tutorial here: 
+To get started on deploying the architecture on your own subscription, please follow our tutorial [here](large-scale-tutorial.md)
 
 # Features & Limitations
 

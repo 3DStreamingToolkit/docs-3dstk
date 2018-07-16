@@ -4,19 +4,19 @@ The nature of a 3DStreamingToolkit deployment implies a complex authentication s
 
 ## Prework:
 
-1) [Create an AAD Tenant](https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-howto-tenant)
-2) [Create an AAD B2C Application](https://docs.microsoft.com/en-us/azure/active-directory-b2c/active-directory-b2c-app-registration) (used for client login)
-3) [Create a Normal AAD Application](https://docs.microsoft.com/en-us/azure/azure-resource-manager/resource-group-create-service-principal-portal) (used for server login)
-4) Record tenant name and app id's for use below
-5) (optional) setup [TURN](https://en.wikipedia.org/wiki/Traversal_Using_Relays_around_NAT) if you need to support advanced NAT traversal scenarios. We have an article about how we did this [here](https://www.microsoft.com/developerblog/2018/01/29/orchestrating-turn-servers-cloud-deployment)
-6) (optional) record TURN postgres credential information
+1. [Create an AAD Tenant](https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-howto-tenant)
+2. [Create an AAD B2C Application](https://docs.microsoft.com/en-us/azure/active-directory-b2c/active-directory-b2c-app-registration) (used for client login)
+3. [Create a Normal AAD Application](https://docs.microsoft.com/en-us/azure/azure-resource-manager/resource-group-create-service-principal-portal) (used for server login)
+4. Record tenant name and app id's for use below
+5. (optional) setup [TURN](https://en.wikipedia.org/wiki/Traversal_Using_Relays_around_NAT) if you need to support advanced NAT traversal scenarios. We have an article about how we did this [here](https://www.microsoft.com/developerblog/2018/01/29/orchestrating-turn-servers-cloud-deployment)
+6. (optional) record TURN postgres credential information
 
 ## Setup Signaling Authentication:
 
 > This secures transmission of [sdp](https://webrtchacks.com/sdp-anatomy/) messages, which are the session establishment messages. It's how our clients find servers, and vice versa.
 
-1) deploy [signaling](https://github.com/3DStreamingToolkit/signal-3dstk) to azure. This is simple, just click the deploy button. 
-2) in [App Settings](https://docs.microsoft.com/en-us/azure/app-service/web-sites-configure) set the following (note: these are defined in [the readme](https://github.com/3DStreamingToolkit/signal-3dstk/blob/master/README.md)):
+1. deploy [signaling](https://github.com/3DStreamingToolkit/signal-3dstk) to azure. This is simple, just click the deploy button. 
+2. in [App Settings](https://docs.microsoft.com/en-us/azure/app-service/web-sites-configure) set the following (note: these are defined in [the readme](https://github.com/3DStreamingToolkit/signal-3dstk/blob/master/README.md)):
     + `AAD_TENANT_ID` your aad tenant info. ex: `3dtoolkit.onmicrosoft.com`
     + `AAD_B2C_CLIENT_APPLICATION_ID` your add client app id. ex: `aacf1b7a-104c-4efe-9ca7-9f4916d6b66a`
     + `AAD_B2C_POLICY_NAME` your aad b2c policy name. ex: `b2c_1_signup` 
@@ -26,8 +26,8 @@ The nature of a 3DStreamingToolkit deployment implies a complex authentication s
 
 > This secures [TURN](https://en.wikipedia.org/wiki/Traversal_Using_Relays_around_NAT) such that short lived temporary credentials are used, and further ensures that only AAD authenticated users can retrieve said credentials. __If you aren't using TURN in production, you don't need this__.
 
-1) deploy [identity management](https://github.com/anastasiia-zolochevska/3dtoolkit-identity-management) to azure.
-2) in [App Settings](https://docs.microsoft.com/en-us/azure/app-service/web-sites-configure) set the following:
+1. deploy [identity management](https://github.com/anastasiia-zolochevska/3dtoolkit-identity-management) to azure.
+2. in [App Settings](https://docs.microsoft.com/en-us/azure/app-service/web-sites-configure) set the following:
     + `PGUSER` your TURN postgres username
     + `PGDATABASE` your TURN postgres database name
     + `PGPASSWORD` your TURN postgres password
@@ -44,9 +44,9 @@ The nature of a 3DStreamingToolkit deployment implies a complex authentication s
 
 > This hands out credentials to clients, using short-lived device tokens and a user device to login. We have an article about how we did this, and why it exists [here](https://www.microsoft.com/developerblog/2018/04/23/oauth-2-0-mixed-reality-applications/).
 
-1) modify [app.js](https://github.com/bengreenier/oauth24d/blob/master/examples/server/node/app.js) to use a real [passportjs](http://www.passportjs.org/) strategy, likely [passport-azure-ad](https://github.com/azuread/passport-azure-ad) (__no public example yet, see https://github.com/bengreenier/oauth24d/issues/2__).
-2) deploy the modified [oauth24d](https://github.com/bengreenier/oauth24d/tree/master/examples/server/node) to azure.
-3) in [App Settings]() set the following:
+1. modify [app.js](https://github.com/bengreenier/oauth24d/blob/master/examples/server/node/app.js) to use a real [passportjs](http://www.passportjs.org/) strategy, likely [passport-azure-ad](https://github.com/azuread/passport-azure-ad) (__no public example yet, see https://github.com/bengreenier/oauth24d/issues/2__).
+2. deploy the modified [oauth24d](https://github.com/bengreenier/oauth24d/tree/master/examples/server/node) to azure.
+3. in [App Settings]() set the following:
     + `AUTH_URI` the user facing authentication url (should be oauth24d service site with a specific path. ex: `<siteName>.azurewebsites.net/login`)
     + Optional settings exist, please see [the readme](https://github.com/bengreenier/oauth24d/blob/master/examples/server/node/README.md) for more info
 
