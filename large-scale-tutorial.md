@@ -15,17 +15,17 @@ This tutorial provides instructions on how to set up a large-scale cloud archite
 13. Connect the clients to the VMs
 
 Extra customization: 
-14. Customizing your Compute Nodes
-15. Setting up Azure AD for Batch usage
-16. Network Configuration for Batch usage
+* Customizing your Compute Nodes
+* Setting up Azure AD for Batch usage
+* Network Configuration for Batch usage
 
-# 1. Log in to Azure
+## 1. Log in to Azure
 
 Log in to the Azure Portal at: https://portal.azure.com
 
 ![01-login-portal](https://user-images.githubusercontent.com/779562/42053151-c261c35c-7ade-11e8-953a-6560c88a54c2.png)
 
-# 2. Create a new Virtual Network
+## 2. Create a new Virtual Network
 
 1. Click + "Create a resource".
 2. Search for Virtual Network and click to proceed.
@@ -34,7 +34,7 @@ Log in to the Azure Portal at: https://portal.azure.com
 
 ![02-virtual-network-create](https://user-images.githubusercontent.com/779562/42053400-667801c2-7adf-11e8-8bc5-ab938cddb955.png)
  
-# 3. Deploy a Signaling Server
+## 3. Deploy a Signaling Server
 
 1. Refer to the Signaling Server from the following repo: https://github.com/3DStreamingToolkit/signal-3dstk
 2. Clone the repo locally if you wish to download the code.
@@ -42,7 +42,7 @@ Log in to the Azure Portal at: https://portal.azure.com
 
 ![03-signaling-server-deploy](https://user-images.githubusercontent.com/10086264/42473193-ef51b3d4-8391-11e8-8342-72770b5279c1.png)
  
-# 4. Create a new Azure Batch account
+## 4. Create a new Azure Batch account
 
 1. Click + "Create a resource".
 2. Search for Batch Service and click to proceed.
@@ -52,14 +52,14 @@ Log in to the Azure Portal at: https://portal.azure.com
 
 ![04-batch-create](https://user-images.githubusercontent.com/779562/42054261-e0fadb2a-7ae1-11e8-8e76-e19c36a7dd0d.PNG)
 
-# 5. Upload streaming application releases to Azure Batch
+## 5. Upload streaming application releases to Azure Batch
 
 1. Visit the Azure Portal at: https://portal.azure.com
 2. Click on the Batch account you created earlier.
 3. Browse the sections to see Applications within that Batch account.
 4. Upload the application releases with desired versioning. For each pool creation, Azure Batch will automatically copy a specific or latest version of the application and unzip the content.  
 
-# 6. Upload all dependencies and functional tests to Azure Batch
+## 6. Upload all dependencies and functional tests to Azure Batch
 
 1. Browse to the same Applications section as step 6
 2. Upload the desired Nvidia driver install. For Azure NV series get the latest [here](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/n-series-driver-setup)
@@ -70,14 +70,14 @@ Log in to the Azure Portal at: https://portal.azure.com
 
 ![06-batch-applications](./Images/batch-applications.jpg) 
  
-# 7. Clone/Download the sample Cloud3DSTKDeployment web app/api project
+## 7. Clone/Download the sample Cloud3DSTKDeployment web app/api project
 
 1. Refer to the Cloud3DSTKDeployment project from the following repo: https://github.com/3DStreamingToolkit/cloud-deploy
 2. Clone the repo locally and open `Cloud3DSTKDeployment.sln` in Visual Studio 2017.
 
-![07-cloud-deploy](./Images/clouddeploy.jpg)
+![07-cloud-deploy](./Images/clouddeploy.JPG)
 
-# 8. Modify/add QA tasks for Linux/TURN pool creation
+## 8. Modify/add QA tasks for Linux/TURN pool creation
 
 1. Open to `Services/BatchService.cs` and look at `CreateTurnPool` method
 2. Set the desired VM type and Ubuntu version for your TURN server nodes. Be default, we use the `STANDARD_A1` machines and `Ubuntu Server 14.04.5-LTS`. See the [Azure Batch documentation](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/sizes?toc=%2fazure%2fvirtual-machines%2flinux%2ftoc.json) for more details.
@@ -105,7 +105,7 @@ pool.StartTask = new StartTask
 };
 ```
 
-# 9. Modify/add QA tasks for Windows/Rendering pool creation
+## 9. Modify/add QA tasks for Windows/Rendering pool creation
 1. Open `Services/BatchService.cs` and look at `CreateRenderingPool` method
 2. Set the desired VM size and Windows version. For optimal streaming, we recommended using the `Standard_NV6 VM` and `Windows Server 2016`.  
 ```
@@ -184,7 +184,7 @@ var startRenderingCommand = string.Format(
         serverCapacity);
 ```
 
-# 10. Run the Web project, locally or in the cloud.
+## 10. Run the Web project, locally or in the cloud.
 
 1. Update the JSON configuration file for your environment
 3. Refer to the sample settings below and replace with your own values
@@ -205,7 +205,7 @@ var startRenderingCommand = string.Format(
 }
 ```
  
-# 11. Invoke the Cloud3DSTKDeployment endpoints with HTTP POST
+## 11. Invoke the Cloud3DSTKDeployment endpoints with HTTP POST
 
 1. Make a note of the Web API endpoint and append the API route path, e.g. https://localhost:44329/api/create
 2. Prepare to call the endpoint with a POST request, e.g. using a tool such as Postman
@@ -226,7 +226,7 @@ var startRenderingCommand = string.Format(
 }
 ```
 
-# 12. Browse the Batch account using the Portal or Batch Explorer
+## 12. Browse the Batch account using the Portal or Batch Explorer
 
 1. Revisit the Azure Portal at: https://portal.azure.com
 2. Click on the Batch account you created earlier.
@@ -235,15 +235,15 @@ var startRenderingCommand = string.Format(
 5. Monitor the Nodes in each Pool and wait until the status reached the IDLE state
 6. The Server Rendering applications are now running on the VM and clients are able to connect by joining the signaling server 
 
-# 13. Connect the clients to the VMs
+## 13. Connect the clients to the VMs
 
 1. Look at the [Get Started section](./index.md#get-started) to setup a client. 
 2. The WebRTC configuration should use the signaling server deployed in step 3. The TURN server credentials are automatically passed down to the clients (DirectX and WebClient samples) on connection.
 3. Depending on the servers capacity, dedicated nodes and pools, you can now connect multiple clients and easily scale up/down inside the Azure Batch portal or by triggering the API endpoints from step 11. 
 
-## Extra customization
+# Extra customization
  
-# 14. Customizing your Compute Nodes.
+## Customizing your Compute Nodes.
 
 When you call the [CreatePool() method](https://docs.microsoft.com/en-us/dotnet/api/microsoft.azure.batch.pooloperations.createpool?view=azure-dotnet) in the Batch SDK, you have several options how you want to create the Virtual Machines as Compute Nodes within your pool.
 
@@ -301,7 +301,7 @@ virtualMachineConfiguration: new VirtualMachineConfiguration(
 
 NOTE: When using a custom image, you may use Azure AD authentication to access the VM image. 
 
-# 15. Setting up Azure AD for Batch usage.
+## Setting up Azure AD for Batch usage.
 
 To set up Azure AD for Batch usage, follow the instructions provided at:
 * https://docs.microsoft.com/en-us/azure/batch/batch-aad-auth
@@ -326,7 +326,7 @@ After you've registered your Batch application, you may browse the Azure Portal 
 
 ![15-azure-ad-batch](https://user-images.githubusercontent.com/779562/42062008-2307277c-7afa-11e8-8724-af02caae88a3.png)
  
-# 16. Network Configuration for Batch usage.
+## Network Configuration for Batch usage.
 
 In the very first step, we set up a Virtual Network. In order to use it programmatically with the Batch SDK, simply set the [NetworkConfiguration.SubnetId](https://docs.microsoft.com/en-us/dotnet/api/microsoft.azure.batch.networkconfiguration.subnetid?view=azure-dotnet#Microsoft_Azure_Batch_NetworkConfiguration_SubnetId) property to the Subnet Id value of your Virtual Network. You can also customize the Port/IP restrictions for your virtual network. 
 
@@ -382,8 +382,8 @@ There are some features and limitations to be aware of when using Azure Batch:
 
 # Related resources
 
-* Azure Batch website: https://azure.microsoft.com/en-us/services/batch/
-* Batch Documentation: https://docs.microsoft.com/en-us/azure/batch/
-* Azure Batch in a Virtual Network: https://docs.microsoft.com/en-us/azure/batch/batch-virtual-network
-* Batch Samples on GitHub: https://github.com/Azure/azure-batch-samples
-* Azure Code Samples: https://azure.microsoft.com/en-us/resources/samples/?service=batch&sort=0
+* Azure Batch website: [https://azure.microsoft.com/en-us/services/batch/](https://azure.microsoft.com/en-us/services/batch/)
+* Batch Documentation: [https://docs.microsoft.com/en-us/azure/batch/](https://docs.microsoft.com/en-us/azure/batch/)
+* Azure Batch in a Virtual Network: [https://docs.microsoft.com/en-us/azure/batch/batch-virtual-network](https://docs.microsoft.com/en-us/azure/batch/batch-virtual-network)
+* Batch Samples on GitHub: [https://github.com/Azure/azure-batch-samples](https://github.com/Azure/azure-batch-samples)
+* Azure Code Samples: [https://azure.microsoft.com/en-us/resources/samples/?service=batch&sort=0](https://azure.microsoft.com/en-us/resources/samples/?service=batch&sort=0)
