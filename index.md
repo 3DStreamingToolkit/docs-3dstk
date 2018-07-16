@@ -4,7 +4,7 @@ layout: default
 
 A toolkit for creating powerful cloud-based 3D experiences that stream to traditionally out of reach low-powered devices.
 
-![Maingif](./Images/header.png)
+![mainheader](./Images/header.png)
 
 ## Quick Links
 
@@ -55,11 +55,11 @@ Please see our code story on [how to deploy a simple or load-balanced TURN](http
 
 ### 3. Sample server and client applications
 
-We strongly recommend running out pre-built samples for server and clients, before attempting to integrate the plugin into a new application. This will ensure that the network configuration is running properly. 
+We strongly recommend running out pre-built samples for server and clients, before attempting to integrate the plugin into a new application. This will ensure the network configuration is running properly. 
 
 Any local or remote server machine that will be used for rendering and streaming, must have the following prerequisites:
-•	The target machine must run Windows 10 or Windows Server 2016 and must have a compatible Nvidia GPU that can run Nvencode.
-•	x64 Visual C++ Redistributable for Visual Studio 2015
+* The target machine must run Windows 10 or Windows Server 2016 and must have a compatible Nvidia GPU that can run Nvencode.
+* x64 Visual C++ Redistributable for Visual Studio 2015
 
 > NOTE: you can use a non-Nvidia GPU for testing as it will automatically switch to software encoding, however, we do not recommend using that in production as the latency and FPS will be greatly affected. 
 
@@ -112,7 +112,7 @@ To start streaming, double click on the client/server name and the real-time int
 > This is the output of the DirectXSpinningCube server when connected to a DirectX native client. 
 ![FirstScene](./Images/clientoutput.jpg)
 
-After connecting, you should be seeing success! If you're instead seeing errors, check out the [Troubleshooting guide](https://github.com/3DStreamingToolkit/3DStreamingToolkit/wiki/FAQ) and then [file an issue](https://github.com/3DStreamingToolkit/3DStreamingToolkit/issues/new). Additionally, you can see more information about our other sample implementations [here](https://github.com/3DStreamingToolkit/3DStreamingToolkit/wiki/Feature-matrices).
+After connecting, you should be seeing success! If you're instead seeing errors, check out the [Troubleshooting guide](./faq.md) and then [file an issue](https://github.com/3DStreamingToolkit/3DStreamingToolkit/issues/new). Additionally, you can see more information about our other sample implementations [here](./feature-matrix.md).
 
 ## How to build the toolkit
 
@@ -149,7 +149,7 @@ Once you see `Libraries retrieved and up to date` you may proceed.
 + Done!
 > Note: We no longer support x86 server builds that are using nvencode. This is due to 32-bit support gradually being deprecated/removed from CUDA. 
 
-If you're seeing errors, check out the [troubleshooting guide](https://github.com/3DStreamingToolkit/3DStreamingToolkit/wiki/FAQ) and then [file an issue](https://github.com/3DStreamingToolkit/3DStreamingToolkit/issues/new).
+If you're instead seeing errors, check out the [Troubleshooting guide](./faq.md) and then [file an issue](https://github.com/3DStreamingToolkit/3DStreamingToolkit/issues/new).
 
 ## Building WebRTC from source
 
