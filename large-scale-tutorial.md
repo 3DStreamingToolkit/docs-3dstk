@@ -39,6 +39,13 @@ Log in to the Azure Portal at: https://portal.azure.com
 1. Refer to the Signaling Server from the following repo: https://github.com/3DStreamingToolkit/signal-3dstk
 2. Clone the repo locally if you wish to download the code.
 3. Click the "Deploy to Azure" button directly from the repo's Readme page.
+4. Once deployed, add the following properties: 
+    * **WEBRTC_HEARTBEAT_ENABLED**: TRUE
+    * **WEBRTC_HEARTBEAT_MS**: 5000
+    * **WEBRTC_CAPACITY_ENABLED**: TRUE 
+    * **WEBRTC_PEERID_RESPECT_CAPACITY**: TRUE
+    * **WEBRTC_PEERID_PAIRING**: TRUE
+5. The settings above will ensure the signaling server will remove unresponsive clients/servers and assign new clients based on server capacity. 
 
 ![03-signaling-server-deploy](https://user-images.githubusercontent.com/10086264/42473193-ef51b3d4-8391-11e8-8342-72770b5279c1.png)
  
@@ -153,8 +160,20 @@ pool.ApplicationPackageReferences = new List<ApplicationPackageReference>
          }
     };
 ```
-4. Modify the `StartTask` to install all your dependencies and run the unit tests. In this example, we copy the rendering application to a desired path, install vc-redist, nvidia drivers and run the end-to-end functional tests:
+4. Modify the `StartTask` to install all your dependencies and run the unit tests. In this example, we copy the rendering application to a desired path, install vc-redist, nvidia drivers, run the end-to-end functional tests and run the server-deploy-script to set the correct signaling/TURN server information and start the rendering application as a Windows service:
 ```
+// Command to start the rendering service
+var startRenderingCommand = string.Format(
+    "cmd /c powershell -command \"start-process powershell -verb runAs -ArgumentList '-ExecutionPolicy Unrestricted -file %AZ_BATCH_APP_PACKAGE_server-deploy-script#1.0%\\server_deploy.ps1 {1} {2} {3} {4} {5} {6} {7} {0} '\"",
+    this.serverPath,
+    string.Format("turn:{0}:3478", turnServerIp),
+    "username",
+    "password",
+    this.signalingServerUrl,
+    this.signalingServerPort,
+    5000,
+    this.maxUsersPerRenderingNode);
+
 // Create and assign the StartTask that will be executed when compute nodes join the pool.
 pool.StartTask = new StartTask
 {
@@ -163,49 +182,56 @@ pool.StartTask = new StartTask
         "cmd /c robocopy %AZ_BATCH_APP_PACKAGE_sample-server#1.0% {0} /E && " +
         "cmd /c %AZ_BATCH_APP_PACKAGE_vc-redist#2015%\\vc_redist.x64.exe /install /passive /norestart && " +
         "cmd /c %AZ_BATCH_APP_PACKAGE_NVIDIA#391.58%\\setup.exe /s && " +
-        "cmd /c %AZ_BATCH_APP_PACKAGE_native-server-tests#1%\\NativeServerTests\\NativeServer.Tests.exe --gtest_also_run_disabled_tests --gtest_filter=\"*Driver*:*Hardware*\"",
+        "cmd /c %AZ_BATCH_APP_PACKAGE_native-server-tests#1%\\NativeServerTests\\NativeServer.Tests.exe --gtest_also_run_disabled_tests --gtest_filter=\"*Driver*:*Hardware*\" &&" +
+        startRenderingCommand,
     this.serverPath),
     UserIdentity = new UserIdentity(new AutoUserSpecification(AutoUserScope.Task, ElevationLevel.Admin)),
     WaitForSuccess = true,
     MaxTaskRetryCount = 2
 };
 ```
-5. If required, add extra tasks that each pool will perform in the `AddRenderingTasksAsync` method. In our example, we run the server-deploy-script to set the correct signaling/TURN server information and start the rendering application as a Windows service. 
-```
-var startRenderingCommand = string.Format(
-        "cmd /c powershell -command \"start-process powershell -verb runAs -ArgumentList '-ExecutionPolicy Unrestricted -file %AZ_BATCH_APP_PACKAGE_server-deploy-script#1.0%\\server_deploy.ps1 {1} {2} {3} {4} {5} {6} {7} {0} '\"",
-        this.serverPath,
-        string.Format("turn:{0}:3478", turnServerIp),
-        "username",
-        "password",
-        signalingServerURL,
-        signalingServerPort,
-        5000,
-        serverCapacity);
-```
 
 ## 10. Run the Web project, locally or in the cloud.
 
 1. Update the JSON configuration file for your environment
-3. Refer to the sample settings below and replace with your own values
-4. Run the Web App project locally or after deploying to your Azure account
+2. Refer to the sample settings below and replace with your own values
+3. Run the Web App project locally or after deploying to your Azure account
 
 ```json
 {
-  "BatchAccountName": "REPLACE_BATCH_ACCOUNT_NAME",
-  "BatchAccountKey": "REPLACE_BATCH_ACCOUNT_KEY",
-  "BatchAccountUrl": "REPLACE_BATCH_ACCOUNT_URL",
-  "Logging": {
-    "LogLevel": {
-      "Default": "Debug",
-      "System": "Information",
-      "Microsoft": "Information"
-    }
-  }
+  "BatchAccountName": "BATCH_ACCOUNT_NAME",
+  "BatchAccountKey": "BATCH_ACCOUNT_KEY",
+  "BatchAccountUrl": "https://BATCH_ACCOUNT_URL",
+  "AuthorityUri": "AZURE_AD_URI",
+  "BatchResourceUri": "BATCH_RESOURCE_URI",
+  "ClientId": "AZURE_AD_CLIENT_ID",
+  "RedirectUri": "AZURE_AD_REDIRECT_URI",
+  "Vnet": "/subscriptions/{subscription}/resourceGroups/{group}/providers/{provider}/virtualNetworks/{network}/subnets/{subnet}",
+  "SignalingServerUrl": "SIGNALING_URI",
+  "SignalingServerPort": null,
+  "DedicatedTurnNodes": "1",
+  "DedicatedRenderingNodes": "1",
+  "MaxUsersPerRenderingNode": "3",
+  "AutomaticScalingUpThreshold": "0",
+  "AutomaticScalingDownThreshold": "0",
+  "MinimumRenderingPools": 1,
+  "AutomaticDownscaleTimeoutMinutes": 5
 }
 ```
+
+* **BatchAccountName**, **BatchAccountKey**, **BatchAccountUrl**: These keys are used to access the Batch service with [SharedKeyCredentials](https://docs.microsoft.com/en-us/dotnet/api/microsoft.azure.batch.auth.batchsharedkeycredentials?view=azure-dotnet). This is enough for an out-of-the-box VM image. (**required**)
+* **AuthorityUri**, **BatchResourceUri**, **ClientId**, **RedirectUri**: Required keys for [TokenCredentials](https://docs.microsoft.com/en-us/dotnet/api/microsoft.azure.batch.auth.batchtokencredentials?view=azure-dotnet) which needs [Azure AD](https://docs.microsoft.com/en-us/azure/batch/batch-aad-auth). This will give full access to the Batch service with custom images creation. (**optional but recommended**)
+* **Vnet**: This vnet will be used by all TURN and rendering servers and will ensure they use a local network to reduce latency (**optional but recommended**)
+* **SignalingServerUrl**, **SignalingServerPort**: The URL and port of the signaling server that all servers will automatically connect to. (**required**)
+* **DedicatedTurnNodes**: Number of TURN server to create inside Batch. (**Minimum 1 required**)
+* **DedicatedRenderingNodes**: Number of rendering server per pool. (**Minimum 1 required**)
+* **MaxUsersPerRenderingNode**: Number of max users per rendering server. (**Minimum 1 required**)
+* **AutomaticScalingUpThreshold**: A percentage threshold to automatically spin up a new rendering pool if the percentage of active users exceeds it. For example a `50` value will automatically create a new pool if the number active users exceeds 50% of the total capacity. `0` will disable this feature. (**optional**)
+* **AutomaticScalingDownThreshold**: A percentage threshold to automatically remove rendering pools if the percentage of active users drops below it. It is used in conjunction with `MinimumRenderingPools` and `AutomaticDownscaleTimeoutMinutes`. `0` will disable this feature. (**optional**)
+* **MinimumRenderingPools**: The minimum number of rendering pools to keep alive in the Batch service. (**optional**)
+* **AutomaticDownscaleTimeoutMinutes**: The time to wait in minutes until a scale down is triggered. For example, if the number of active users drops below the scaling down threshold, we start a timer to check for `x` minutes if this case stays true. If during this time the number of active users goes over the threshold, the scale down timer is cancelled. If it is still valid after the timeout, we scale down the rendering pools. (**optional**) 
  
-## 11. Invoke the Cloud3DSTKDeployment endpoints with HTTP POST
+## 11. Invoke the Cloud3DSTKDeployment api/create endpoint with HTTP POST
 
 1. Make a note of the Web API endpoint and append the API route path, e.g. https://localhost:44329/api/create
 2. Prepare to call the endpoint with a POST request, e.g. using a tool such as Postman
@@ -214,19 +240,28 @@ var startRenderingCommand = string.Format(
 
 ```json
 {
-  "signalingServer": "SIGNALING_URI", // Required
-  "signalingServerPort": 80, // Required
-  "vnet": "/subscriptions/{subscription}/resourceGroups/{group}/providers/{provider}/virtualNetworks/{network}/subnets/{subnet}", 
   "renderingPoolId": "RENDERING_POOL_ID",
-  "renderingJobId": "RENDERING_JOB_ID",
-  "dedicatedRenderingNodes": 1,
-  "maxUsersPerRenderingNode": 1,
-  "turnPoolId": "TURN_POOL_ID",
-  "dedicatedTurnNodes": 1
+  "turnPoolId": "TURN_POOL_ID"
 }
 ```
 
-## 12. Browse the Batch account using the Portal or Batch Explorer
+## 12. Setup auto scaling with api/orchestrator endpoint
+
+1. Make sure the **AutomaticScalingUpThreshold** or **AutomaticScalingDownThreshold** is set in the configuration from step 10. 
+2. Setup your signaling server with the following properties:
+    * **WEBRTC_PUBLISH_STATE**: TRUE
+    * **WEBRTC_PUBLISH_URI**: the uri published in the step above with the appended orchestrator path, e.g. https://localhost:44329/api/orchestrator
+    * **WEBRTC_TRUST_PROXY**: TRUE 
+3. The signaling server will now publish the current state of active users and the orchestrator will decide based on the threshold if pools should be added or deleted. 
+
+```json
+{
+  "renderingPoolId": "RENDERING_POOL_ID",
+  "turnPoolId": "TURN_POOL_ID"
+}
+```
+
+## 13. Browse the Batch account using the Portal or Batch Explorer
 
 1. Revisit the Azure Portal at: https://portal.azure.com
 2. Click on the Batch account you created earlier.
@@ -235,11 +270,11 @@ var startRenderingCommand = string.Format(
 5. Monitor the Nodes in each Pool and wait until the status reached the IDLE state
 6. The Server Rendering applications are now running on the VM and clients are able to connect by joining the signaling server 
 
-## 13. Connect the clients to the VMs
+## 14. Connect the clients to the VMs
 
 1. Look at the [Getting Started section](./index.md#getting-started) to setup a client. 
 2. The WebRTC configuration should use the signaling server deployed in step 3. The TURN server credentials are automatically passed down to the clients (DirectX and WebClient samples) on connection.
-3. Depending on the servers capacity, dedicated nodes and pools, you can now connect multiple clients and easily scale up/down inside the Azure Batch portal or by triggering the API endpoints from step 11. 
+3. Depending on the servers capacity, dedicated nodes and pools, you can now connect multiple clients and easily scale up/down inside the Azure Batch portal or by triggering the API endpoints from step 11 and 12. 
 
 # Extra customization
  

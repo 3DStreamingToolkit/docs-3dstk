@@ -18,8 +18,8 @@ This architecture is a great starting point for anyone looking to create an ente
 5. Once a client has a successful login from an end-user, it will automatically connect to signaling server. 
 6. The signaling server will select the best available VM and connect the client to the experience. If no slots are available, it will wait until one is ready. 
 7. The real-time streaming starts between the VM and client. The preferred TURN server credentials are sent down to the client dynamically and the video, audio and data channels will pass through the TURN server to the VM. This will ensure streaming will work with any proxy or corporate firewall and no public IP is exposed on the VM level. 
-8. For each active client connection, a status is sent to the orchestrator to decide if new pools are needed. This is based on the configuration set at step 2 and can be fully customized for any scenario. 
-9. The cloud scaling api will monitor the status of Azure Batch pools and based on the configuration, it will decide if new pools are needed, or, delete inactive ones. 
+8. For each active client connection, a status is sent to the orchestrator to decide if new pools are needed. This is based on the configuration set at step 2 and can be fully customized for any scenario.
+9. The cloud scaling api will monitor the status of Azure Batch pools and based on the configuration, it will decide if new pools are needed, or, delete inactive ones if the number of active users is below a certain threshold. 
 10. If a new pool is needed, it will trigger a request to Azure Batch to create pool of NV6+ VMs. New TURN server nodes will be created if the existing ones are at full capacity. 
 11. Once a new pool is created, the scaling api will trigger tasks to install dependencies, install the streaming applications and run all functional tests to ensure the VM is ready for streaming.
 12. When a VM is ready, the streaming application will automatically connect to the signaling server and will be assigned to a queue to await client connections.
@@ -42,17 +42,48 @@ Below is a sample snippet of the JSON input that can be provided:
 
 ```json
 {
-  "signalingServer": "SIGNALING_URI", // Required
-  "signalingServerPort": 80, // Required
-  "vnet": "/subscriptions/{subscription}/resourceGroups/{group}/providers/{provider}/virtualNetworks/{network}/subnets/{subnet}", 
   "renderingPoolId": "RENDERING_POOL_ID",
-  "renderingJobId": "RENDERING_JOB_ID",
-  "dedicatedRenderingNodes": 1,
-  "maxUsersPerRenderingNode": 1,
-  "turnPoolId": "TURN_POOL_ID",
-  "dedicatedTurnNodes": 1
+  "turnPoolId": "TURN_POOL_ID"
 }
 ```
+
+### Configuration options
+
+To fully customize the api to your scenario the following configuration options are available: 
+
+```json
+{
+  "BatchAccountName": "BATCH_ACCOUNT_NAME",
+  "BatchAccountKey": "BATCH_ACCOUNT_KEY",
+  "BatchAccountUrl": "https://BATCH_ACCOUNT_URL",
+  "AuthorityUri": "AZURE_AD_URI",
+  "BatchResourceUri": "BATCH_RESOURCE_URI",
+  "ClientId": "AZURE_AD_CLIENT_ID",
+  "RedirectUri": "AZURE_AD_REDIRECT_URI",
+  "Vnet": "/subscriptions/{subscription}/resourceGroups/{group}/providers/{provider}/virtualNetworks/{network}/subnets/{subnet}",
+  "SignalingServerUrl": "SIGNALING_URI",
+  "SignalingServerPort": null,
+  "DedicatedTurnNodes": "1",
+  "DedicatedRenderingNodes": "1",
+  "MaxUsersPerRenderingNode": "3",
+  "AutomaticScalingUpThreshold": "0",
+  "AutomaticScalingDownThreshold": "0",
+  "MinimumRenderingPools": 1,
+  "AutomaticDownscaleTimeoutMinutes": 5
+}
+```
+
+* **BatchAccountName**, **BatchAccountKey**, **BatchAccountUrl**: These keys are used to access the Batch service with [SharedKeyCredentials](https://docs.microsoft.com/en-us/dotnet/api/microsoft.azure.batch.auth.batchsharedkeycredentials?view=azure-dotnet). This is enough for an out-of-the-box VM image. (**required**)
+* **AuthorityUri**, **BatchResourceUri**, **ClientId**, **RedirectUri**: Required keys for [TokenCredentials](https://docs.microsoft.com/en-us/dotnet/api/microsoft.azure.batch.auth.batchtokencredentials?view=azure-dotnet) which needs [Azure AD](https://docs.microsoft.com/en-us/azure/batch/batch-aad-auth). This will give full access to the Batch service with custom images creation. (**optional but recommended**)
+* **Vnet**: This vnet will be used by all TURN and rendering servers and will ensure they use a local network to reduce latency (**optional but recommended**)
+* **SignalingServerUrl**, **SignalingServerPort**: The URL and port of the signaling server that all servers will automatically connect to. (**required**)
+* **DedicatedTurnNodes**: Number of TURN server to create inside Batch. (**Minimum 1 required**)
+* **DedicatedRenderingNodes**: Number of rendering server per pool. (**Minimum 1 required**)
+* **MaxUsersPerRenderingNode**: Number of max users per rendering server. (**Minimum 1 required**)
+* **AutomaticScalingUpThreshold**: A percentage threshold to automatically spin up a new rendering pool if the percentage of active users exceeds it. For example a `50` value will automatically create a new pool if the number active users exceeds 50% of the total capacity. `0` will disable this feature. (**optional**)
+* **AutomaticScalingDownThreshold**: A percentage threshold to automatically remove rendering pools if the percentage of active users drops below it. It is used in conjunction with `MinimumRenderingPools` and `AutomaticDownscaleTimeoutMinutes`. `0` will disable this feature. (**optional**)
+* **MinimumRenderingPools**: The minimum number of rendering pools to keep alive in the Batch service. (**optional**)
+* **AutomaticDownscaleTimeoutMinutes**: The time to wait in minutes until a scale down is triggered. For example, if the number of active users drops below the scaling down threshold, we start a timer to check for `x` minutes if this case stays true. If during this time the number of active users goes over the threshold, the scale down timer is cancelled. If it is still valid after the timeout, we scale down the rendering pools. (**optional**) 
 
 ### Azure Batch
 
