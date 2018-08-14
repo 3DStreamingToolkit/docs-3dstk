@@ -220,10 +220,10 @@ pool.StartTask = new StartTask
 }
 ```
 
-* **BatchAccountName**, **BatchAccountKey**, **BatchAccountUrl**: These keys are used to access the Batch service with [SharedKeyCredentials](https://docs.microsoft.com/en-us/dotnet/api/microsoft.azure.batch.auth.batchsharedkeycredentials?view=azure-dotnet). This is enough for an out-of-the-box VM image. (**required**)
+* **BatchAccountName**, **BatchAccountKey**, **BatchAccountUrl**: These keys are used to access the Batch service created in step 4. (**required**)
 * **AuthorityUri**, **BatchResourceUri**, **ClientId**, **RedirectUri**: Required keys for [TokenCredentials](https://docs.microsoft.com/en-us/dotnet/api/microsoft.azure.batch.auth.batchtokencredentials?view=azure-dotnet) which needs [Azure AD](https://docs.microsoft.com/en-us/azure/batch/batch-aad-auth). This will give full access to the Batch service with custom images creation. (**optional but recommended**)
-* **Vnet**: This vnet will be used by all TURN and rendering servers and will ensure they use a local network to reduce latency (**optional but recommended**)
-* **SignalingServerUrl**, **SignalingServerPort**: The URL and port of the signaling server that all servers will automatically connect to. (**required**)
+* **Vnet**: Use the vnet created in step 2 in the following format `/subscriptions/{subscription}/resourceGroups/{group}/providers/{provider}/virtualNetworks/{network}/subnets/{subnet}` (**optional but recommended**)
+* **SignalingServerUrl**, **SignalingServerPort**: The URL and port of the signaling server created in step 3 (**required**)
 * **DedicatedTurnNodes**: Number of TURN server to create inside Batch. (**Minimum 1 required**)
 * **DedicatedRenderingNodes**: Number of rendering server per pool. (**Minimum 1 required**)
 * **MaxUsersPerRenderingNode**: Number of max users per rendering server. (**Minimum 1 required**)
