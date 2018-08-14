@@ -11,8 +11,9 @@ This tutorial provides instructions on how to set up a large-scale cloud archite
 9. Modify/add QA tasks for Windows/Rendering pool creation
 10. Run the Web project, locally or in the cloud
 11. Invoke the Cloud3DSTKDeployment endpoints with HTTP POST
-12. Browse the Batch account using the Portal or Batch Explorer
-13. Connect the clients to the VMs
+12. Setup auto scaling with api/orchestrator endpoint
+13. Browse the Batch account using the Portal or Batch Explorer
+14. Connect the clients to the VMs
 
 Extra customization: 
 * Customizing your Compute Nodes
@@ -21,7 +22,7 @@ Extra customization:
 
 ## 1. Log in to Azure
 
-Log in to the Azure Portal at: https://portal.azure.com
+Log in to the Azure Portal at: [https://portal.azure.com](https://portal.azure.com)
 
 ![01-login-portal](https://user-images.githubusercontent.com/779562/42053151-c261c35c-7ade-11e8-953a-6560c88a54c2.png)
 
@@ -61,7 +62,7 @@ Log in to the Azure Portal at: https://portal.azure.com
 
 ## 5. Upload streaming application releases to Azure Batch
 
-1. Visit the Azure Portal at: https://portal.azure.com
+1. Visit the Azure Portal at: [https://portal.azure.com](https://portal.azure.com)
 2. Click on the Batch account you created earlier.
 3. Browse the sections to see Applications within that Batch account.
 4. Upload the application releases with desired versioning. For each pool creation, Azure Batch will automatically copy a specific or latest version of the application and unzip the content.  
@@ -79,7 +80,7 @@ Log in to the Azure Portal at: https://portal.azure.com
  
 ## 7. Clone/Download the sample Cloud3DSTKDeployment web app/api project
 
-1. Refer to the Cloud3DSTKDeployment project from the following repo: https://github.com/3DStreamingToolkit/cloud-deploy
+1. Refer to the Cloud3DSTKDeployment project from the following repo: [https://github.com/3DStreamingToolkit/cloud-deploy](https://github.com/3DStreamingToolkit/cloud-deploy)
 2. Clone the repo locally and open `Cloud3DSTKDeployment.sln` in Visual Studio 2017.
 
 ![07-cloud-deploy](./Images/clouddeploy.JPG)
@@ -233,7 +234,7 @@ pool.StartTask = new StartTask
  
 ## 11. Invoke the Cloud3DSTKDeployment api/create endpoint with HTTP POST
 
-1. Make a note of the Web API endpoint and append the API route path, e.g. https://localhost:44329/api/create
+1. Make a note of the Web API endpoint and append the API route path, e.g. `https://localhost:44329/api/create`
 2. Prepare to call the endpoint with a POST request, e.g. using a tool such as Postman
 3. Use the JSON sample below and replace the values to provide your own input.
 4. Call the endpoint and observe the response.
@@ -250,7 +251,7 @@ pool.StartTask = new StartTask
 1. Make sure the **AutomaticScalingUpThreshold** or **AutomaticScalingDownThreshold** is set in the configuration from step 10. 
 2. Setup your signaling server with the following properties:
     * **WEBRTC_PUBLISH_STATE**: TRUE
-    * **WEBRTC_PUBLISH_URI**: the uri published in the step above with the appended orchestrator path, e.g. https://localhost:44329/api/orchestrator
+    * **WEBRTC_PUBLISH_URI**: the uri published in the step above with the appended orchestrator path, e.g. `https://localhost:44329/api/orchestrator`
     * **WEBRTC_TRUST_PROXY**: TRUE 
 3. The signaling server will now publish the current state of active users and the orchestrator will decide based on the threshold if pools should be added or deleted. 
 
@@ -263,7 +264,7 @@ pool.StartTask = new StartTask
 
 ## 13. Browse the Batch account using the Portal or Batch Explorer
 
-1. Revisit the Azure Portal at: https://portal.azure.com
+1. Revisit the Azure Portal at: [https://portal.azure.com](https://portal.azure.com)
 2. Click on the Batch account you created earlier.
 3. Browse the sections to see Applications, Pools and Jobs within that Batch account
 4. Check the Pools created with the POST request above
@@ -290,7 +291,7 @@ When you call the [CreatePool() method](https://docs.microsoft.com/en-us/dotnet/
 **Option A**
 
 When using a Cloud Service Configuration, you will have to pick a virtualMachineSize (e.g. standard_d1_v2) and an osFamily (e.g. 5 for Windows Server 2016). You may find the complete list of options here:
-https://docs.microsoft.com/en-us/azure/cloud-services/cloud-services-sizes-specs
+[https://docs.microsoft.com/en-us/azure/cloud-services/cloud-services-sizes-specs](https://docs.microsoft.com/en-us/azure/cloud-services/cloud-services-sizes-specs)
 
 Sample Code:
 ```C#
@@ -339,7 +340,7 @@ NOTE: When using a custom image, you may use Azure AD authentication to access t
 ## Setting up Azure AD for Batch usage.
 
 To set up Azure AD for Batch usage, follow the instructions provided at:
-* https://docs.microsoft.com/en-us/azure/batch/batch-aad-auth
+* [https://docs.microsoft.com/en-us/azure/batch/batch-aad-auth](https://docs.microsoft.com/en-us/azure/batch/batch-aad-auth)
 
 This involves the following steps:
 1. Register your application with a tenant
@@ -351,9 +352,9 @@ When registering your Batch App, you will have to add it as either a Web App/API
 * If you have a Console app (or other Native app), you should choose the Native option, which does not require any API Access Keys. 
 
 When adding integrated authentication, you will have the option to select the Batch API by searching for one of the following:
-a. MicrosoftAzureBatch (no spaces)
-b. Microsoft Azure Batch (with spaces)
-c. ddbf3205-c6bd-46ae-8127-60eb93363864 (the ID for the Batch API) 
+a. `MicrosoftAzureBatch` (no spaces)
+b. `Microsoft Azure Batch` (with spaces)
+c. `ddbf3205-c6bd-46ae-8127-60eb93363864` (the ID for the Batch API) 
 
 As of this writing, Option B is the best way to add the Batch API, i.e. searching for Microsoft Azure Batch (with spaces). Registering your Batch application will allow you to use your custom VM image as described above.
 
@@ -401,7 +402,7 @@ There are some guidelines and restrictions when using a creating a Virtual Netwo
 * The specified subnet must allow communication from the Azure Batch service to be able to schedule tasks on the compute nodes. This can be verified by checking if the specified VNet has any associated Network Security Groups (NSG). If communication to the compute nodes in the specified subnet is denied by an NSG, then the Batch service will set the state of the compute nodes to unusable.
 * This property can be specified only for pools created with cloudServiceConfiguration. If this is specified on pools created with the virtualMachineConfiguration property, the Batch service returns 400 (Bad Request).
 
-**SOURCE**: https://blogs.msdn.microsoft.com/maheshk/2016/11/25/how-to-specify-vnetclassic-when-creating-new-azurebatchpool-compute-nodes/
+**SOURCE**: [https://blogs.msdn.microsoft.com/maheshk/2016/11/25/how-to-specify-vnetclassic-when-creating-new-azurebatchpool-compute-nodes/](https://blogs.msdn.microsoft.com/maheshk/2016/11/25/how-to-specify-vnetclassic-when-creating-new-azurebatchpool-compute-nodes/)
 
 # Features & Limitations
 
