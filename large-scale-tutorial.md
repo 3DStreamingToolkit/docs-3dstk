@@ -129,6 +129,7 @@ pool = this.batchClient.PoolOperations.CreatePool(
             version: "latest"),
         nodeAgentSkuId: "batch.node.windows amd64"));
 ``` 
+
 3. Modify the application packages that you wish to include for each pool. Here is an example based on the applications uploaded above:
 ```
 // Specify the application and version to install on the compute nodes
@@ -161,7 +162,9 @@ pool.ApplicationPackageReferences = new List<ApplicationPackageReference>
          }
     };
 ```
+
 4. Modify the `StartTask` to install all your dependencies and run the unit tests. In this example, we copy the rendering application to a desired path, install vc-redist, nvidia drivers, run the end-to-end functional tests and run the server-deploy-script to set the correct signaling/TURN server information and start the rendering application as a Windows service:
+
 ```
 // Command to start the rendering service
 var startRenderingCommand = string.Format(
@@ -174,7 +177,9 @@ var startRenderingCommand = string.Format(
     this.signalingServerPort,
     5000,
     this.maxUsersPerRenderingNode);
+```
 
+```
 // Create and assign the StartTask that will be executed when compute nodes join the pool.
 pool.StartTask = new StartTask
 {
