@@ -33,7 +33,7 @@ Indicates the [ICE](https://en.wikipedia.org/wiki/Interactive_Connectivity_Estab
 
 Only valid when `iceConfiguration` is `relay`. Defines the [TURN](https://tools.ietf.org/html/rfc5766) configuration values for connection establishment. 
 
-__These values can be transmitted from the server (and therefore not needed on the client) in some configurations. See [this post](https://github.com/3DStreamingToolkit/3DStreamingToolkit/wiki/Transmitting-TURN-credentials) for more info.__
+__These values can be transmitted from the server (and therefore not needed on the client) in some configurations. See [this post](./dynamic-turn.md) for more info.__
 
 #### uri
 
