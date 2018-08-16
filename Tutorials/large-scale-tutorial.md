@@ -77,14 +77,14 @@ Log in to the Azure Portal at: [https://portal.azure.com](https://portal.azure.c
 6. Upload the [latest server deployment script](https://github.com/3DStreamingToolkit/cloud-deploy/tree/master/batch-application-packages/streaming-server-deployment)
 7. You can upload any other scripts or installers that you require for your VM creation
 
-![06-batch-applications](./Images/batch-applications.JPG) 
+![06-batch-applications](../Images/batch-applications.JPG) 
  
 ## 7. Clone/Download the sample Cloud3DSTKDeployment web app/api project
 
 1. Refer to the Cloud3DSTKDeployment project from the following repo: [https://github.com/3DStreamingToolkit/cloud-deploy](https://github.com/3DStreamingToolkit/cloud-deploy)
 2. Clone the repo locally and open `Cloud3DSTKDeployment.sln` in Visual Studio 2017.
 
-![07-cloud-deploy](./Images/clouddeploy.JPG)
+![07-cloud-deploy](../Images/clouddeploy.JPG)
 
 ## 8. Modify/add QA tasks for Linux/TURN pool creation
 

@@ -1,11 +1,11 @@
-## Introduction
+# Introduction
 
 3DStreamingToolkit's purpose is to allow building powerful stereoscopic 3D experiences that run on the cloud and stream to low-powered devices. To achieve this, a large-scale architecture is required that has all the required WebRTC servers (signaling and TURN) and an orchestrator capable of monitoring and scaling up/down pools of VMs that host the rendering applications. Clients can easily connect to the signaling server and the orchestrator will decide what VM should connect to the user.
 
 All the required components can be found in the following GitHub repository:
 [https://github.com/3DStreamingToolkit/cloud-deploy](https://github.com/3DStreamingToolkit/cloud-deploy)
 
-## Reference architecture
+# Reference architecture
 
 ![architecture](./Images/large-scale-3DSTK-architecture.jpg)
 
@@ -99,7 +99,7 @@ More info on setting NetworkConfiguration.SubnetId: [https://docs.microsoft.com/
 
 # Setting up the cloud architecture
 
-To get started on deploying the architecture on your own subscription, please follow our tutorial [here](large-scale-tutorial.md)
+To get started on deploying the architecture on your own subscription, please follow our tutorial **[Large scale deployment tutorial](./Tutorials/large-scale-tutorial.md)**
 
 # Features & Limitations
 
