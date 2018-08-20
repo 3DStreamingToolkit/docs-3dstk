@@ -171,7 +171,7 @@ In a real-world scenario, this solution will require a large-scale cloud infrast
 + [Web client sample](./Clients/web-client.md)
 + [React Native client sample](./Clients/react-native-client.md)
 
-## Server sample
+## Server samples
 
 + [DirectX spinning cube server sample](./Servers/directx-spinning-cube-server.md)
 + [DirectX multithreaded server sample](./Servers/directx-multithreaded-server.md)
@@ -189,6 +189,7 @@ These resources will be critical to your success in configuring and scaling appl
 
 + [The feature matrix](./feature-matrix.md)
 + [Sample implementation configuration files](./webrtc-config.md)
++ [Rendering service configuration](./rendering-config.md)
 + [Multiple users connecting to a single server](./multi-peer.md)
 + [Configuring authentication](./auth.md)
 
