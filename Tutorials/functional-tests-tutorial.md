@@ -1,4 +1,4 @@
-## Running functional tests tutorial
+# Running functional tests tutorial
 
 This tutorial provides instructions on how to run the functional end-to-end tests on a rendering machine to validate the following:
 * Compatible hardware and Nvidia drivers to run Nvencode

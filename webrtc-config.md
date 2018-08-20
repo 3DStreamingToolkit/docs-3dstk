@@ -1,5 +1,3 @@
-Use [webrtcConfig.json](https://github.com/3DStreamingToolkit/3DStreamingToolkit/blob/master/Plugins/NativeServerPlugin/webrtcConfig.json) for TURN relay communication
-
 # WebRTC Configuration (webrtcConfig.json)
 
 3DStreamingToolkit's sample server and client applications make use of an external JSON configuration file (webrtcConfig.json) to manage the connections to the Signaling and TURN services.  Below is an example webrtcConfig.json file.  This file contains placeholders for server addresses and login credentials from your server setup.  This file should be placed in your executable directory.

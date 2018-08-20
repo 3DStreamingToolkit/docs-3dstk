@@ -11,7 +11,10 @@ A toolkit for creating powerful cloud-based 3D experiences that stream to tradit
 - [Getting Started](#getting-started)
 - [How to build the toolkit](#how-to-build-the-toolkit)
 - [Building WebRTC from source](#building-webrtc-from-source)
-- [Large scale cloud deployment](./large-scale.md)
+- [Large scale cloud deployment](#large-scale-cloud-deployment)
+- [Client samples](#client-samples)
+- [Server samples](#server-samples)
+- [Tutorials](#tutorials)
 - [Next Steps](#next-steps)
 - [Learn More](#learn-more)
 
@@ -159,10 +162,32 @@ For any changes to the underlying native or UWP WebRTC library, you must build W
 
 In a real-world scenario, this solution will require a large-scale cloud infrastructure to support multiple active users and manual/dynamic scaling based on usage. To achieve this, we created a reference architecture that can be easily deployed on your Azure subscription. To get started, look at [Large scale cloud deployment](./large-scale.md). 
 
+## Client samples
+
++ [HoloLens DirectX client sample](./Clients/directx-hololens-client.md)
++ [HoloLens Unity client sample](./Clients/unity-hololens-client.md)
++ [Android Java client sample](./Clients/android-java-client.md)
++ [iOS Swift client sample](./Clients/ios-swift-client.md)
++ [Web client sample](./Clients/web-client.md)
++ [React Native client sample](./Clients/react-native-client.md)
+
+## Server sample
+
++ [DirectX spinning cube server sample](./Servers/directx-spinning-cube-server.md)
++ [DirectX multithreaded server sample](./Servers/directx-multithreaded-server.md)
++ [OpenGL spinning cube server sample](./Servers/opengl-spinning-cube-server.md)
++ [Unity fractal server sample](./Servers/unity-fractal-server.md)
+
+## Tutorials 
+
++ [Running functional tests](./Tutorials/functional-tests-tutorial.md)
++ [Large scale cloud deployment](./Tutorials/large-scale-tutorial.md)
+
 ## Next Steps
 
 These resources will be critical to your success in configuring and scaling applications.
 
++ [The feature matrix](./feature-matrix.md)
 + [Sample implementation configuration files](./webrtc-config.md)
 + [Multiple users connecting to a single server](./multi-peer.md)
 + [Configuring authentication](./auth.md)
